@@ -6,4 +6,24 @@
     <h1 class="mt-4">{{contact.name}} Projects</h1>
 </div>
 
+<div class="container mt-5">
+    <div class="row">
+        {% for project in projects %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="{{ url_for('uploaded_file', filename=project.picture_path) }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.title }}</h5>
+                    <p class="card-text">{{ project.description }}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Duration: {{ project.duration }}</li>
+                    <li class="list-group-item">Collaborators: {{ project.collaborators }}</li>
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
 {%endblock%}

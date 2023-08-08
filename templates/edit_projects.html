@@ -7,4 +7,34 @@
     <i class="fas fa-project-diagram mx-2"></i>
 </div>
 
+<div class="container mt-5 col-md-8">
+
+    <!-- Form to add new project -->
+    <div class="d-grid gap-2">
+        <a href="{{ url_for('add_project') }}" class="btn btn-dark mb-3">Add New Project</a>
+    </div>
+    <!-- ... -->
+    
+    <!-- Existing projects -->
+    <div class="row mb-5">
+        {% for project in projects %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <img src="{{ url_for('uploaded_file', filename=project.picture_path) }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.title }}</h5>
+                    <p class="card-text">{{ project.description }}</p>
+                    <!-- Add edit and delete buttons here -->
+                    <div>
+                        <a href="{{ url_for('update_project', project_id=project.id) }}" class="btn btn-sm btn-secondary ml-2">Edit</a>
+                        <a href="{{ url_for('delete_project', project_id=project.id) }}" class="btn btn-sm btn-danger ml-2">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
 {%endblock%}

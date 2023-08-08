@@ -1,0 +1,44 @@
+{%extends 'dashboard.html'%}
+{%block title%}Edit Projects{%endblock%}
+{%block content%}'
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    {{ "Edit Project" if project else "Add New Project" }}
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Project Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required value="{{ project.title if project }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Project Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required>{{ project.description if project }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="duration" class="form-label">Project Duration</label>
+                            <input type="text" class="form-control" id="duration" name="duration" required value="{{ project.duration if project }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="collaborators" class="form-label">Collaborators</label>
+                            <input type="text" class="form-control" id="collaborators" name="collaborators" required value="{{ project.collaborators if project }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="picture" class="form-label">Project Picture (Optional)</label>
+                            <input type="file" class="form-control" id="picture" name="picture" accept="image/*">
+                        </div>
+                        <div class="mb-3 text-center">
+                            <button type="submit" class="btn btn-primary">{{ "Update" if project else "Add" }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}

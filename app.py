@@ -102,6 +102,15 @@ class Education(db.Model):
     reference_contact = db.Column(db.String(150), nullable=True)
     description = db.Column(db.Text, nullable=True)
 
+class Project(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    duration = db.Column(db.String(50), nullable=False)
+    collaborators = db.Column(db.String(150), nullable=True)
+    picture_path = db.Column(db.String(150), nullable=True)
+
+
 
 # login
 login_manager = LoginManager()
@@ -214,7 +223,94 @@ def delete_education(education_id):
 @app.route('/edit_projects')
 @login_required
 def edit_projects():
-    return render_template('edit_projects.html')
+    projects = Project.query.all()
+    contact_info = Contact.query.first()
+    return render_template('edit_projects.html',projects=projects,contact=contact_info)
+
+@app.route('/dashboard/projects/add', methods=['GET', 'POST'])
+@login_required
+def add_project():
+    contact_info = Contact.query.first()
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+        duration = request.form.get('duration')
+        collaborators = request.form.get('collaborators')
+        
+        # Assuming you use Flask's "request" object for file uploads.
+        picture = request.files.get('picture')
+        if picture:
+            picture_filename = secure_filename(picture.picture)
+            picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_filename)
+            picture.save(picture_path)
+        else:
+            picture_path = None
+
+        new_project = Project(
+            title=title,
+            description=description,
+            duration=duration,
+            collaborators=collaborators,
+            picture_path=picture_path if picture_path else None
+        )
+
+        db.session.add(new_project)
+        db.session.commit()
+
+        flash('Project added successfully!', 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('project_form.html',contact=contact_info)
+
+@app.route('/dashboard/projects/update/<int:project_id>', methods=['GET', 'POST'])
+@login_required
+def update_project(project_id):
+    project = Project.query.get_or_404(project_id)
+    contact_info = Contact.query.first()
+    
+    if request.method == 'POST':
+        project.title = request.form.get('title')
+        project.description = request.form.get('description')
+        project.duration = request.form.get('duration')
+        project.collaborators = request.form.get('collaborators')
+        
+        picture = request.files.get('picture')
+        if picture:
+            # Optionally, remove the old picture if needed
+            old_picture_path = os.path.join(app.config['UPLOAD_FOLDER'], project.picture_path)
+            if os.path.exists(old_picture_path):
+                os.remove(old_picture_path)
+            
+            # Save the new picture
+            picture_filename = secure_filename(picture.filename)
+            picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_filename)
+            picture.save(picture_path)
+            project.picture_path = picture_path
+
+        db.session.commit()
+
+        flash('Project updated successfully!', 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('project_form.html', project=project,contact=contact_info)
+
+@app.route('/dashboard/projects/delete/<int:project_id>', methods=['POST'])
+@login_required
+def delete_project(project_id):
+    project = Project.query.get_or_404(project_id)
+    
+    # Optionally, remove the project picture from the file system
+    if project.picture_path:
+        picture_path = os.path.join(app.config['UPLOAD_FOLDER'], project.picture_path)
+        if os.path.exists(picture_path):
+            os.remove(picture_path)
+    
+    db.session.delete(project)
+    db.session.commit()
+
+    flash('Project deleted successfully!', 'success')
+    return redirect(url_for('manage_projects'))
+
 
 # edit contact route
 @app.route('/edit_contact', methods=['GET', 'POST'])
@@ -274,7 +370,8 @@ def education():
 @app.route('/projects')
 def projects():
     contact_info = Contact.query.first()
-    return render_template('projects.html', contact=contact_info)
+    projects = Project.query.all()
+    return render_template('projects.html', contact=contact_info,projects=projects)
 
 # contact route
 @app.route('/contact')
