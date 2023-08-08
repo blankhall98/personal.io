@@ -1,0 +1,18 @@
+{%extends 'dashboard.html'%}
+{%block title%}Edit Education{%endblock%}
+{%block content%}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="container d-flex flex-row align-items-center">
+    <h3 class="mt-4">Edit Education</h3>
+    <i class="fas fa-graduation-cap mx-2"></i>
+</div>
+
+{%endblock%}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard {%block title%}{%endblock%}</title>
+    <!-- Add Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">{Users Name}</a>
+            <a class="btn btn-outline-light" href="/logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container text-center">
+        <h1 class="mt-4">{Users Name} Dashboard</h1>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="container mt-4">
+        <div class="list-group">
+            <!-- Main Information Section -->
+            <a href="/edit_main_information" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center my-2">
+                Edit Main Information
+                <i class="fas fa-info-circle"></i>
+            </a>
+
+            <!-- Education Section -->
+            <a href="/edit_education" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center my-2">
+                Edit Education
+                <i class="fas fa-graduation-cap"></i>
+            </a>
+
+            <!-- Projects Section -->
+            <a href="/edit_projects" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center my-2">
+                Edit Projects
+                <i class="fas fa-project-diagram"></i>
+            </a>
+
+            <!-- Contact Section -->
+            <a href="/edit_contact" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center my-2">
+                Edit Contact
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <!-- Add Bootstrap 5 JS bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

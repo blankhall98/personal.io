@@ -1,0 +1,17 @@
+{%extends 'base.html'%}
+{%block title%}Home{%endblock%}
+{%block content%}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="container text-center">
+    <h1 class="mt-4">{Users Name} Personal Website</h1>
+</div>
+
+{%endblock%}
