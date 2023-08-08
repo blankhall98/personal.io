@@ -1,0 +1,54 @@
+{%extends 'dashboard.html'%}
+{%block title%}Add Education{%endblock%}
+
+{%block content%}
+
+<div class="card mt-5 col-sm-6 d-flex flex-column justify-content-center container">
+    <div class="card-header">
+        Update Education
+    </div>
+    <div class="card-body">
+        <form method="post">
+            <!-- Education Type Dropdown -->
+            <div class="mb-3">
+                <label for="educationType" class="form-label">Education Type</label>
+                <select class="form-select" id="educationType" name="education_type">
+                    <option value="institution">Institution</option>
+                    <option value="course">Course</option>
+                </select>
+            </div>
+
+            <!-- Name of the institution/course -->
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+
+            <!-- Duration -->
+            <div class="mb-3">
+                <label for="duration" class="form-label">Duration</label>
+                <input type="text" class="form-control" id="duration" name="duration" placeholder="e.g. 4 years" required>
+            </div>
+
+            <!-- Reference Contact -->
+            <div class="mb-3">
+                <label for="reference_contact" class="form-label">Reference Contact</label>
+                <input type="text" class="form-control" id="reference_contact" name="reference_contact">
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-dark">Add Education</button>
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+
+{%endblock%}

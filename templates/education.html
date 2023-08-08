@@ -4,6 +4,33 @@
 
 <div class="container text-center">
     <h1 class="mt-4">{{contact.name}} Education</h1>
+    <p class="mb-5">
+        Discover the educational background and academic pursuits that have played a pivotal role in shaping the foundation and expertise. 
+        From formal institutions to specialized courses, this section sheds light on the continuous commitment to learning and development.
+    </p>
+</div>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Education</h2>
+    <div class="row">
+        {% for edu in educations %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 edu-card" data-number="{{ loop.index }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ edu.name }}</h5>
+                    <p class="card-text">{{ edu.description }}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Type: {{ edu.education_type }}</li>
+                    <li class="list-group-item">Duration: {{ edu.duration }}</li>
+                    {% if edu.reference_contact %}
+                    <li class="list-group-item">Reference: {{ edu.reference_contact }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 
 {%endblock%}

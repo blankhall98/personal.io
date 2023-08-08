@@ -2,17 +2,35 @@
 {%block title%}Edit Education{%endblock%}
 {%block content%}
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
-
 <div class="container d-flex flex-row align-items-center">
     <h3 class="mt-4">Edit Education</h3>
     <i class="fas fa-graduation-cap mx-2"></i>
 </div>
+
+<div class="card mt-5 col-sm-6 d-flex flex-column justify-content-center container my-3">
+    <div class="card-header">
+        Education Management
+    </div>
+    <div class="card-body">
+        <!-- Button to Add New Education Instance -->
+        <div class="d-grid gap-2">
+            <a href="{{ url_for('add_education') }}" class="btn btn-dark mb-3">Add New Education</a>
+        </div>
+
+        <!-- List of Existing Education Instances -->
+        <ul class="list-group">
+            {% for edu in educations %}
+            <li class="list-group-item text-center">
+                <strong>{{ edu.name }}</strong> ({{ edu.education_type }})
+                <div>
+                    <a href="{{ url_for('update_education', education_id=edu.id) }}" class="btn btn-sm btn-secondary ml-2">Edit</a>
+                    <a href="{{ url_for('delete_education', education_id=edu.id) }}" class="btn btn-sm btn-danger ml-2">Delete</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
 
 {%endblock%}

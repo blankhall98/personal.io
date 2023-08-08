@@ -1,3 +1,8 @@
+body {
+    overflow-x: hidden;
+}
+
+
 #navigation a {
     transition: color 0.3s;
 }
@@ -17,3 +22,38 @@
     line-height: 1.6;
 }
 
+/* Card Number Styling for Education Cards */
+.edu-card {
+    position: relative;
+}
+
+.edu-card::before {
+    content: attr(data-number);
+    position: absolute;
+    top: -15px;
+    left: 10px;
+    background-color: #000;  /* Black color */
+    color: #fff;  /* White color */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Enhanced Card Styling for Education Cards */
+.edu-card {
+    border: 2px solid #000;
+    transition: transform 0.3s;
+}
+
+.edu-card:hover {
+    transform: scale(1.05);
+}
+
+.edu-card .card-title {
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+}

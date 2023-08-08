@@ -21,13 +21,12 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/upload_files', methods=['POST'])
+@app.route('/upload_files', methods=['POST','GET'])
 @login_required
 def upload_files():
     if 'profile_picture' in request.files:
         profile_picture = request.files['profile_picture']
         if profile_picture.filename == '':
-            flash('No profile picture selected')
             return redirect(request.url)
         if profile_picture and allowed_file(profile_picture.filename):
             filename = secure_filename(profile_picture.filename)
@@ -41,7 +40,6 @@ def upload_files():
     if 'cv' in request.files:
         cv = request.files['cv']
         if cv.filename == '':
-            flash('No CV selected')
             return redirect(request.url)
         if cv and allowed_file(cv.filename):
             filename = secure_filename(cv.filename)
@@ -96,6 +94,15 @@ class Contact(db.Model):
     facebook = db.Column(db.String(100), default="default_facebook")
     linkedin = db.Column(db.String(100), default="default_linkedin")
 
+class Education(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    education_type = db.Column(db.String(50))  # institution or course
+    name = db.Column(db.String(150))
+    duration = db.Column(db.String(100))
+    reference_contact = db.Column(db.String(150), nullable=True)
+    description = db.Column(db.Text, nullable=True)
+
+
 # login
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -138,7 +145,7 @@ def dashboard():
     return render_template('dashboard.html', contact=contact_info)
 
 # edit main information route
-@app.route('/edit_main_information')
+@app.route('/edit_main_information',methods=['GET', 'POST'])
 @login_required
 def edit_main_information():
     contact_info = Contact.query.first()
@@ -148,7 +155,60 @@ def edit_main_information():
 @app.route('/edit_education')
 @login_required
 def edit_education():
-    return render_template('edit_education.html')
+    educations = Education.query.all()
+    contact_info = Contact.query.first()
+    return render_template('edit_education.html',contact=contact_info,educations=educations)
+
+@app.route('/add_education', methods=['GET', 'POST'])
+@login_required  # assuming you want this page to be accessible only when logged in
+def add_education():
+    contact_info = Contact.query.first()
+    if request.method == 'POST':
+        education_type = request.form.get('education_type')
+        name = request.form.get('name')
+        duration = request.form.get('duration')
+        reference_contact = request.form.get('reference_contact')
+        description = request.form.get('description')
+
+        new_education = Education(education_type=education_type, name=name, duration=duration,
+                                  reference_contact=reference_contact, description=description)
+        db.session.add(new_education)
+        db.session.commit()
+
+        flash('Education added successfully!', 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('add_education.html',contact=contact_info)
+
+
+@app.route('/update_education/<int:education_id>', methods=['GET', 'POST'])
+@login_required
+def update_education(education_id):
+    contact_info = Contact.query.first()
+    education = Education.query.get_or_404(education_id)
+
+    if request.method == 'POST':
+        education.education_type = request.form.get('education_type')
+        education.name = request.form.get('name')
+        education.duration = request.form.get('duration')
+        education.reference_contact = request.form.get('reference_contact')
+        education.description = request.form.get('description')
+
+        db.session.commit()
+        flash('Education updated successfully!', 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('update_education.html', education=education,contact=contact_info)
+
+@app.route('/delete_education/<int:education_id>', methods=['GET','POST'])
+@login_required
+def delete_education(education_id):
+    education = Education.query.get_or_404(education_id)
+
+    db.session.delete(education)
+    db.session.commit()
+    flash('Education deleted successfully!', 'success')
+    return redirect(url_for('dashboard'))
 
 # edit projects route
 @app.route('/edit_projects')
@@ -207,7 +267,8 @@ def index():
 @app.route('/education')
 def education():
     contact_info = Contact.query.first()
-    return render_template('education.html',contact=contact_info)
+    educations = Education.query.all()
+    return render_template('education.html',contact=contact_info,educations=educations)
 
 # projects route
 @app.route('/projects')

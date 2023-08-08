@@ -11,6 +11,8 @@
 
 </head>
 
+
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-dark bg-dark">
@@ -19,6 +21,14 @@
             <a class="btn btn-outline-light" href="/logout">Logout</a>
         </div>
     </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
 
     <div class="container text-center">
         <h1 class="mt-4">{{contact.name}} Dashboard</h1>
