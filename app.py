@@ -222,7 +222,12 @@ def contact():
     if not contact_info:
         # Handle this case as you see fit; e.g., render a different template or redirect.
         return "No contact information available."
-    return render_template('contact.html', contact=contact_info)
+    info = Info.query.first()
+    if info:
+        profile_picture_url = url_for('uploaded_file', filename=info.profile_picture_path) if info.profile_picture_path else None
+    else:
+        profile_picture_url = None
+    return render_template('contact.html', contact=contact_info, profile_picture_url=profile_picture_url)
 
 
 # run app

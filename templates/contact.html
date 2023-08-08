@@ -5,6 +5,17 @@
 
 <div class="container text-center">
     <h1 class="mt-4">{{contact.name}} Contact</h1>
+    <div class="row justify-content-center mt-4 my-3">
+        <div class="col-md-6 text-center">
+            {% if profile_picture_url %}
+            <div class="d-flex justify-content-center align-items-center">
+                <img src="{{ profile_picture_url }}" alt="Profile Picture" class="rounded-circle" style="width: 100px; height: 100px;">
+            </div>
+            {% else %}
+            <p class="text-muted">Profile picture coming soon...</p>
+            {% endif %}
+        </div>
+    </div>
     <p class="lead">{{contact.professional_title}}</p>
     <p class="text-center text-muted">
         Welcome to the Contact section. Here, you'll find various ways to get in touch, whether for professional inquiries, collaborations, or just a friendly chat. Feel free to reach out through any of the platforms listed below.
