@@ -10,8 +10,71 @@
     {% endif %}
 {% endwith %}
 
-<div class="container text-center">
-    <h1 class="mt-4">{{contact.name}} Personal Website</h1>
+<!-- Profile Picture -->
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6 text-center">
+        {% if profile_picture_url %}
+        <div class="d-flex justify-content-center align-items-center">
+            <img src="{{ profile_picture_url }}" alt="Profile Picture" class="rounded-circle" style="width: 200px; height: 200px;">
+        </div>
+        {% else %}
+        <p class="text-muted">Profile picture coming soon...</p>
+        {% endif %}
+    </div>
 </div>
+
+<div class="container mt-5">
+    <!-- Introduction -->
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1>Welcome to My Personal Website</h1>
+            <p class="lead">
+                This platform serves as a digital showcase of my journey, achievements, and contact details. Here, you'll find vital information about my career and avenues to connect with me.
+            </p>
+        </div>
+    </div>
+</div>
+
+    <!-- CV Download -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8 text-center">
+            {% if cv_url %}
+            <a href="{{ cv_url }}" class="btn btn-dark" download>Download My CV</a>
+            {% else %}
+            <p class="text-muted">CV will be available for download soon.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <section id="about-me" class="text-center py-5">
+        <h2>About Me</h2>
+        <p class="mt-4">{{ description }}</p>
+    </section>
+
+    <section id="navigation" class="text-center py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="{{ url_for('contact') }}" class="text-dark text-decoration-none">
+                        <h3><i class="fas fa-envelope mr-2"></i>Contact</h3>
+                        <p>Get in touch with me. Find my contact details and social media links here.</p>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{{ url_for('education') }}" class="text-dark text-decoration-none">
+                        <h3><i class="fas fa-graduation-cap mr-2"></i>Education</h3>
+                        <p>Discover my academic journey and qualifications.</p>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{{ url_for('projects') }}" class="text-dark text-decoration-none">
+                        <h3><i class="fas fa-project-diagram mr-2"></i>Projects</h3>
+                        <p>Explore the projects I've worked on and my accomplishments.</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
 
 {%endblock%}

@@ -15,4 +15,42 @@
     <i class="fas fa-info-circle mx-2"></i>
 </div>
 
+<!-- Inside dashboard.html -->
+
+<div class="container mt-4 my-3">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    Update Profile Information
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
+                        <!-- Personal Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Personal Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4">{{ current_description if current_description }}</textarea>
+                        </div>
+                        <!-- Profile Picture -->
+                        <div class="mb-3">
+                            <label for="profile_picture" class="form-label">Profile Picture:</label>
+                            <input type="file" class="form-control" id="profile_picture" name="profile_picture" accept=".png, .jpg, .jpeg, .gif">
+                        </div>
+                        <!-- CV Upload -->
+                        <div class="mb-3">
+                            <label for="cv" class="form-label">CV (PDF format):</label>
+                            <input type="file" class="form-control" id="cv" name="cv" accept=".pdf">
+                        </div>
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-dark">Upload</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {%endblock%}

@@ -1,8 +1,10 @@
 # imports
-from flask import Flask, render_template, request, redirect, url_for, flash, session 
+from flask import Flask, render_template, request, redirect, url_for, flash, session, send_from_directory
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from forms import LoginForm
 from flask_sqlalchemy import SQLAlchemy
+import os
+from werkzeug.utils import secure_filename
 
 # flask app
 app = Flask(__name__)
@@ -12,11 +14,76 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'xxaladinxx'
 db = SQLAlchemy(app)
 
+# uploads
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload_files', methods=['POST'])
+@login_required
+def upload_files():
+    if 'profile_picture' in request.files:
+        profile_picture = request.files['profile_picture']
+        if profile_picture.filename == '':
+            flash('No profile picture selected')
+            return redirect(request.url)
+        if profile_picture and allowed_file(profile_picture.filename):
+            filename = secure_filename(profile_picture.filename)
+            profile_picture.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            profile_picture_path = filename
+        else:
+            profile_picture_path = None
+    else:
+        profile_picture_path = None
+
+    if 'cv' in request.files:
+        cv = request.files['cv']
+        if cv.filename == '':
+            flash('No CV selected')
+            return redirect(request.url)
+        if cv and allowed_file(cv.filename):
+            filename = secure_filename(cv.filename)
+            cv.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            cv_path = filename
+        else:
+            cv_path = None
+    else:
+        cv_path = None
+
+    description = request.form.get('description')
+
+    info = Info.query.first()
+    if not info:
+        new_info = Info(description=description, profile_picture_path=profile_picture_path, cv_path=cv_path)
+        db.session.add(new_info)
+    else:
+        info.description = description
+        if profile_picture_path:
+            info.profile_picture_path = profile_picture_path
+        if cv_path:
+            info.cv_path = cv_path
+
+    db.session.commit()
+
+    return redirect(url_for('dashboard'))
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 # data tables
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20),unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
+
+class Info(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(500), default="Default Description")
+    profile_picture_path = db.Column(db.String(100), default="default_profile_picture")
+    cv_path = db.Column(db.String(100), default="default_cv")
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -74,7 +141,8 @@ def dashboard():
 @app.route('/edit_main_information')
 @login_required
 def edit_main_information():
-    return render_template('edit_main_information.html')
+    contact_info = Contact.query.first()
+    return render_template('edit_main_information.html',contact=contact_info)
 
 # edit education route
 @app.route('/edit_education')
@@ -126,7 +194,14 @@ def main():
 @app.route('/')
 def index():
     contact_info = Contact.query.first()
-    return render_template('index.html',contact=contact_info)
+    info = Info.query.first()
+    if info:
+        profile_picture_url = url_for('uploaded_file', filename=info.profile_picture_path) if info.profile_picture_path else None
+        cv_url = url_for('uploaded_file', filename=info.cv_path) if info.cv_path else None
+        description = info.description
+    else:
+        profile_picture_url, cv_url, description = None, None, None
+    return render_template('index.html', profile_picture_url=profile_picture_url, cv_url=cv_url, description=description,contact=contact_info)
 
 # education route
 @app.route('/education')
