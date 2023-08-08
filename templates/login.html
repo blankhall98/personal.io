@@ -13,6 +13,8 @@
     <div class="row justify-content-center">
         <div class="col-md-4 col-8 mt-3">
             <h2 class="text-center">Log in</h2>
+            <p class="text-center text-muted">Please log in to access your dashboard.</p>
+            <p class="text-center text-danger">If you are not {{contact.name}} please return to the main website <a href="{{ url_for('index') }}">Return</a></p>
             <form action="{{ url_for('login') }}" method="post">
                 {{ form.hidden_tag() }}
                 

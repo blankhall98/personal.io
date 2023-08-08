@@ -14,5 +14,64 @@
     <h3 class="mt-4">Edit Contact</h3>
     <i class="fas fa-envelope mx-2"></i>
 </div>
+ 
+<div class="container mt-5 my-2">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    Edit Contact Information
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name:</label>
+                            <input type="text" name="name" id="name" value="{{ contact.name }}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="professional_title" class="form-label">Professional Title:</label>
+                            <input type="text" name="professional_title" id="professional_title" value="{{ contact.professional_title }}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <textarea name="description" id="description" class="form-control" required>{{ contact.description }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" name="email" id="email" value="{{ contact.email }}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="cellphone" class="form-label">Cellphone:</label>
+                            <input type="tel" name="cellphone" id="cellphone" value="{{ contact.cellphone }}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="instagram" class="form-label">Instagram:</label>
+                            <input type="text" name="instagram" id="instagram" value="{{ contact.instagram }}" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="facebook" class="form-label">Facebook:</label>
+                            <input type="text" name="facebook" id="facebook" value="{{ contact.facebook }}" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="linkedin" class="form-label">LinkedIn:</label>
+                            <input type="text" name="linkedin" id="linkedin" value="{{ contact.linkedin }}" class="form-control">
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <input type="submit" value="Update" class="btn btn-dark">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {%endblock%}

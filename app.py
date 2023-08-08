@@ -18,6 +18,17 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(20),unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
 
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), default="Default Name")
+    professional_title = db.Column(db.String(100), default="Default Title")
+    description = db.Column(db.String(500), default="Default Description")
+    email = db.Column(db.String(100), default="default@example.com")
+    cellphone = db.Column(db.String(20), default="123-456-7890")
+    instagram = db.Column(db.String(100), default="default_instagram")
+    facebook = db.Column(db.String(100), default="default_facebook")
+    linkedin = db.Column(db.String(100), default="default_linkedin")
+
 # login
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -25,6 +36,7 @@ login_manager.login_view = 'login'
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    contact_info = Contact.query.first()
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))  # Redirect to home if user is already logged in
         
@@ -38,7 +50,7 @@ def login():
         else:
             flash('Login unsuccessful. Please check username and password.', 'danger')
             
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=form, contact=contact_info)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -55,7 +67,8 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    contact_info = Contact.query.first()
+    return render_template('dashboard.html', contact=contact_info)
 
 # edit main information route
 @app.route('/edit_main_information')
@@ -76,30 +89,65 @@ def edit_projects():
     return render_template('edit_projects.html')
 
 # edit contact route
-@app.route('/edit_contact')
+@app.route('/edit_contact', methods=['GET', 'POST'])
 @login_required
 def edit_contact():
-    return render_template('edit_contact.html')
+    # Assuming there's only one row for the user's contact information.
+    contact_info = Contact.query.first()
+
+    # If the contact_info doesn't exist, create a default one.
+    if not contact_info:
+        contact_info = Contact()
+        db.session.add(contact_info)
+        db.session.commit()
+
+    if request.method == 'POST':
+        contact_info.name = request.form['name']
+        contact_info.professional_title = request.form['professional_title']
+        contact_info.description = request.form['description']
+        contact_info.email = request.form['email']
+        contact_info.cellphone = request.form['cellphone']
+        contact_info.instagram = request.form['instagram']
+        contact_info.facebook = request.form['facebook']
+        contact_info.linkedin = request.form['linkedin']
+        db.session.commit()
+
+        flash('Contact information updated successfully!', 'success')
+        return redirect(url_for('edit_contact'))
+
+    return render_template('edit_contact.html', contact=contact_info)
 
 # main route
+@app.route('/main')
+def main():
+    contact_info = Contact.query.first()
+    return render_template('base.html',contact=contact_info)
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    contact_info = Contact.query.first()
+    return render_template('index.html',contact=contact_info)
 
 # education route
 @app.route('/education')
 def education():
-    return render_template('education.html')
+    contact_info = Contact.query.first()
+    return render_template('education.html',contact=contact_info)
 
 # projects route
 @app.route('/projects')
 def projects():
-    return render_template('projects.html')
+    contact_info = Contact.query.first()
+    return render_template('projects.html', contact=contact_info)
 
 # contact route
 @app.route('/contact')
 def contact():
-    return render_template('contact.html')
+    contact_info = Contact.query.first()
+    if not contact_info:
+        # Handle this case as you see fit; e.g., render a different template or redirect.
+        return "No contact information available."
+    return render_template('contact.html', contact=contact_info)
 
 
 # run app

@@ -1,9 +1,51 @@
-{%extends 'base.html'%}
-{%block title%}Contact{%endblock%}
-{%block content%}
+{% extends "base.html" %}
+{% block title %}Contact{% endblock %}
+
+{% block content %}
 
 <div class="container text-center">
-    <h1 class="mt-4">{Users Name} Contact</h1>
+    <h1 class="mt-4">{{contact.name}} Contact</h1>
+    <p class="lead">{{contact.professional_title}}</p>
+    <p class="text-center text-muted">
+        Welcome to the Contact section. Here, you'll find various ways to get in touch, whether for professional inquiries, collaborations, or just a friendly chat. Feel free to reach out through any of the platforms listed below.
+    </p>
 </div>
 
-{%endblock%}
+<div class="container mt-5 my-3">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    Contact Information
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <i class="fas fa-user mr-2"></i> {{ contact.name }}
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-briefcase mr-2"></i> {{ contact.professional_title }}
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-info-circle mr-2"></i> {{ contact.description }}
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-envelope mr-2"></i> {{ contact.email }}
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-phone-alt mr-2"></i> {{ contact.cellphone }}
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fab fa-instagram mr-2"></i> <a href="https://instagram.com/{{ contact.instagram }}" target="_blank">{{ contact.instagram }}</a>
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fab fa-facebook-f mr-2"></i> <a href="https://facebook.com/{{ contact.facebook }}" target="_blank">{{ contact.facebook }}</a>
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fab fa-linkedin-in mr-2"></i> <a href="https://linkedin.com/in/{{ contact.linkedin }}" target="_blank">{{ contact.linkedin }}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
