@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 # database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://database:mwF3G88QOyApHkVnqnkRJIAdixA5Q2Gt@dpg-cja36oq683bs7391qgl0-a.oregon-postgres.render.com/database_x133'
 app.config['SECRET_KEY'] = 'xxaladinxx'
 db = SQLAlchemy(app)
 
@@ -108,7 +108,7 @@ class Project(db.Model):
     description = db.Column(db.Text, nullable=False)
     duration = db.Column(db.String(50), nullable=False)
     collaborators = db.Column(db.String(150), nullable=True)
-    picture_path = db.Column(db.String(150), nullable=True)
+    evidence = db.Column(db.String(120), nullable=True)
 
 
 
@@ -236,25 +236,23 @@ def add_project():
         description = request.form.get('description')
         duration = request.form.get('duration')
         collaborators = request.form.get('collaborators')
-        
-        # Assuming you use Flask's "request" object for file uploads.
-        picture = request.files.get('picture')
-        if picture:
-            picture_filename = secure_filename(picture.picture)
-            picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_filename)
-            picture.save(picture_path)
-        else:
-            picture_path = None
 
-        new_project = Project(
+        evidence_filename = None
+        evidence_file = request.files.get('evidence')
+        if evidence_file and evidence_file.filename != '':
+            evidence_filename = secure_filename(evidence_file.filename)
+            evidence_file.save(os.path.join(app.config['UPLOAD_FOLDER'], evidence_filename))
+
+        # Create a new project instance and add to the database
+        project = Project(
             title=title,
             description=description,
             duration=duration,
             collaborators=collaborators,
-            picture_path=picture_path if picture_path else None
+            evidence=evidence_filename
         )
 
-        db.session.add(new_project)
+        db.session.add(project)
         db.session.commit()
 
         flash('Project added successfully!', 'success')
@@ -262,54 +260,44 @@ def add_project():
 
     return render_template('project_form.html',contact=contact_info)
 
-@app.route('/dashboard/projects/update/<int:project_id>', methods=['GET', 'POST'])
+@app.route('/dashboard/update_project/<int:project_id>', methods=['GET', 'POST'])
 @login_required
 def update_project(project_id):
-    project = Project.query.get_or_404(project_id)
     contact_info = Contact.query.first()
-    
+    project = Project.query.get_or_404(project_id)
+
     if request.method == 'POST':
         project.title = request.form.get('title')
         project.description = request.form.get('description')
         project.duration = request.form.get('duration')
         project.collaborators = request.form.get('collaborators')
-        
-        picture = request.files.get('picture')
-        if picture:
-            # Optionally, remove the old picture if needed
-            old_picture_path = os.path.join(app.config['UPLOAD_FOLDER'], project.picture_path)
-            if os.path.exists(old_picture_path):
-                os.remove(old_picture_path)
-            
-            # Save the new picture
-            picture_filename = secure_filename(picture.filename)
-            picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_filename)
-            picture.save(picture_path)
-            project.picture_path = picture_path
+
+        evidence_file = request.files.get('evidence')
+        if evidence_file and evidence_file.filename != '':
+            if project.evidence:
+                os.remove(os.path.join(app.config['UPLOAD_FOLDER'], project.evidence))
+                
+            evidence_filename = secure_filename(evidence_file.filename)
+            evidence_file.save(os.path.join(app.config['UPLOAD_FOLDER'], evidence_filename))
+            project.evidence = evidence_filename
 
         db.session.commit()
 
         flash('Project updated successfully!', 'success')
         return redirect(url_for('dashboard'))
 
-    return render_template('project_form.html', project=project,contact=contact_info)
+    return render_template('update_project.html', project=project, contact=contact_info)
 
-@app.route('/dashboard/projects/delete/<int:project_id>', methods=['POST'])
+@app.route('/dashboard/projects/delete/<int:project_id>', methods=['POST','GET'])
 @login_required
 def delete_project(project_id):
     project = Project.query.get_or_404(project_id)
-    
-    # Optionally, remove the project picture from the file system
-    if project.picture_path:
-        picture_path = os.path.join(app.config['UPLOAD_FOLDER'], project.picture_path)
-        if os.path.exists(picture_path):
-            os.remove(picture_path)
     
     db.session.delete(project)
     db.session.commit()
 
     flash('Project deleted successfully!', 'success')
-    return redirect(url_for('manage_projects'))
+    return redirect(url_for('dashboard'))
 
 
 # edit contact route
@@ -390,4 +378,16 @@ def contact():
 
 # run app
 if __name__ == '__main__':
+    #create database
+    with app.app_context():
+        db.create_all()
+        #personalized user
+        username = 'cvsofia7'
+        password = 'Luisbalamnikobenito7'
+        existing_user = User.query.filter_by(username = username).first()
+        if existing_user is None:
+            owner = User(username = username, password = password)
+            db.session.add(owner)
+            db.session.commit()
+    # run app
     app.run(debug=True)

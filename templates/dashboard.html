@@ -8,7 +8,7 @@
     <!-- Add Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 
@@ -17,7 +17,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">{{contact.name}}</a>
+            <a class="navbar-brand" href="/">Home</a>
             <a class="btn btn-outline-light" href="/logout">Logout</a>
         </div>
     </nav>
@@ -61,6 +61,18 @@
                 <i class="fas fa-envelope"></i>
             </a>
         </div>
+    </div>
+
+    <div class="dashboard-description">
+        <h2>Dashboard Overview</h2>
+        <p>Welcome to the dashboard, the heart of your personal website. Here, you have the tools to shape how the world sees you. This interface provides you with comprehensive control over various sections:</p>
+        <ul>
+            <li><strong>Main Information:</strong> Introduce yourself. From a captivating profile picture to a detailed CV, let your audience get to know you at a glance.</li>
+            <li><strong>Contact Information:</strong> Ensure you're reachable. Update your email, phone number, and social media links to stay connected.</li>
+            <li><strong>Education:</strong> Showcase your academic journey. Whether it's an institution or a short course, every milestone matters.</li>
+            <li><strong>Projects:</strong> Put forward the work you're proud of. Share project details, collaborations, and even evidences of your achievements.</li>
+        </ul>
+        <p>Your website is a reflection of you. Keep it authentic, updated, and engaging. Happy customizing!</p>
     </div>
 
     {% block content %}{% endblock %}

@@ -9,21 +9,53 @@
 <div class="container mt-5">
     <div class="row">
         {% for project in projects %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <img src="{{ url_for('uploaded_file', filename=project.picture_path) }}" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">{{ project.title }}</h5>
-                    <p class="card-text">{{ project.description }}</p>
+        <div class="col-md-4">
+            <div class="card project-card">
+                <div class="card-body project-card-body">
+                    <h3 class="project-card-title">{{ project.title }}</h3>
+                    <p class="project-card-description">{{ project.description }}</p>
+                    <p><strong>Duration:</strong> {{ project.duration }}</p>
+                    <p><strong>Collaborators:</strong> {{ project.collaborators }}</p>
+                    {% if project.evidence %}
+                    <a href="{{ url_for('uploaded_file', filename=project.evidence) }}" class="btn btn-outline-dark btn-sm" download>
+                        Download Project Evidence
+                    </a>
+                    {% else %}
+                    <button class="btn btn-outline-dark btn-sm" disabled>
+                        No Evidence Available
+                    </button>
+                    {% endif %}
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Duration: {{ project.duration }}</li>
-                    <li class="list-group-item">Collaborators: {{ project.collaborators }}</li>
-                </ul>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
+
+<section id="navigation" class="text-center py-5 mt-5">
+    <h2 class="mb-4">More Information</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <a href="{{ url_for('contact') }}" class="text-dark text-decoration-none">
+                    <h4><i class="fas fa-envelope mr-2"></i>Contact</h4>
+                    <p class="text-muted">Get in touch with me. Find my contact details and social media links here.</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ url_for('education') }}" class="text-dark text-decoration-none">
+                    <h4><i class="fas fa-graduation-cap mr-2"></i>Education</h4>
+                    <p class="text-muted">Discover my academic journey and qualifications.</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ url_for('projects') }}" class="text-dark text-decoration-none">
+                    <h4><i class="fas fa-project-diagram mr-2"></i>Projects</h4>
+                    <p class="text-muted">Explore the projects I've worked on and my accomplishments.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 
 {%endblock%}

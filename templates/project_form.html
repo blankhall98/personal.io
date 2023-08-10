@@ -28,8 +28,8 @@
                             <input type="text" class="form-control" id="collaborators" name="collaborators" required value="{{ project.collaborators if project }}">
                         </div>
                         <div class="mb-3">
-                            <label for="picture" class="form-label">Project Picture (Optional)</label>
-                            <input type="file" class="form-control" id="picture" name="picture" accept="image/*">
+                            <label for="evidence" class="form-label">Project Evidence (Optional)</label>
+                            <input type="file" class="form-control" id="evidence" name="evidence" accept="application/pdf">
                         </div>
                         <div class="mb-3 text-center">
                             <button type="submit" class="btn btn-primary">{{ "Update" if project else "Add" }}</button>
